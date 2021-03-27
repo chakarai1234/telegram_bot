@@ -7,7 +7,12 @@ const getMinutes = (date) => {
   let nextBus = new Date(date);
   let currentTime = new Date();
   let difference = (nextBus - currentTime) / (1000 * 60);
-  return String(difference.toFixed(2));
+
+  if (difference < 0) {
+    return "Arrived";
+  } else {
+    return String(Math.floor(difference)) + " Minutes away";
+  }
 };
 
 module.exports = { getMinutes: getMinutes };

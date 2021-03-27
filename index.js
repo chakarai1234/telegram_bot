@@ -31,7 +31,7 @@ bot.onText(/\/(.+[0-9])/, (msg, match) => {
       text = "No Bus Available Sorry";
     } else {
       for (i = 0; i < res.length; i++) {
-        text += "Service No: " + res[i].ServiceNo + " is " + getMinutes(res[i].NextBus.EstimatedArrival) + " Minutes away " + "\n";
+        text += "Service No: " + res[i].ServiceNo + " is " + getMinutes(res[i].NextBus.EstimatedArrival) + "\n\n";
       }
     }
     bot.sendMessage(chatId, text);
