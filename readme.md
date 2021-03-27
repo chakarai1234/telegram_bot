@@ -1,1 +1,1 @@
-<h1><center> Bus - Tracer Telegram Bot </center></h1>
+# Bus - Tracer Telegram Bot
