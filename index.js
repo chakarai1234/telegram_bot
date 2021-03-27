@@ -8,7 +8,9 @@ const token = process.env.TELEGRAM_TOKEN;
 
 const bot = new TelegramBot(token, { polling: true });
 
-let person_location = { latitude: null, longitude: null };
+let person = {};
+// let person = { msg_id: null, chat_name: null, latitude: null, longitude: null };
+let nearest_location = { maxLatitude: null, minLatitude: null, maxLongitude: null, minLongitude: null };
 
 bot.onText(/\/echo (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
@@ -25,7 +27,7 @@ bot.onText(/\/start/, (msg) => {
 bot.onText(/\/(.+[0-9])/, (msg, match) => {
   const chatId = msg.chat.id;
   const resp = match[1];
-  apiCaller(resp).then((res) => {
+  busArrival(resp).then((res) => {
     var text = "";
     if (res.length == 0) {
       text = "No Bus Available Sorry";
@@ -46,10 +48,17 @@ bot.onText(/\/(geolocation)/, (msg) => {
       one_time_keyboard: true,
     }),
   };
-  bot.sendMessage(msg.chat.id, "Where are you?", opts);
+  if (!person[msg.chat.id]) {
+    bot.sendMessage(msg.chat.id, "Where are you?", opts);
+  }
 });
 
 bot.on("location", (msg) => {
-  person_location = { latitude: msg.location.latitude, longitude: msg.location.longitude };
-  console.log(person_location);
+  person[msg.chat.id] = { latitude: msg.location.latitude, longitude: msg.location.longitude };
+  nearest_location = {
+    maxLatitude: person[msg.chat.id].latitude + 0.005,
+    minLatitude: person[msg.chat.id].longitude + 0.005,
+    maxLongitude: person[msg.chat.id].latitude + 0.005,
+    minLongitude: person[msg.chat.id].longitude + 0.005,
+  };
 });
