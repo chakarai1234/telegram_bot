@@ -69,6 +69,5 @@ bot.on("location", (msg) => {
     minLongitude: parseFloat((person_location[msg.chat.id].longitude - 0.005).toFixed(5)),
   };
   console.log(person_location);
-  console.log(person_message);
   console.log(nearest_location);
 });
