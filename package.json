@@ -1,0 +1,16 @@
+{
+  "name": "telegram_bot",
+  "version": "0.0.1",
+  "description": "This is Telegram bot for Bus Arrival",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "author": "Srinivasan Chakarapani",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^8.2.0",
+    "node-telegram-bot-api": "*"
+  }
+}
