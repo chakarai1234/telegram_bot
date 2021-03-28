@@ -89,16 +89,7 @@ bot.on("location", (msg) => {
 
   nearestBusStop(nearest_location[msg.chat.id]).then((res) => {
     bot.sendChatAction(msg.chat.id, "typing");
-    var text = "";
-    if (res.length == 0) {
-      text = "No Bus Stops Available";
-    } else {
-      for (i = 0; i < res.length; i++) {
-        // text = "";
-        text += "Bus Stop No: " + `/${res[i].BusStopCode}\n` + "Bus Stop Name: " + res[i].Description + "\n\n";
-      }
-    }
-    bot.sendMessage(msg.chat.id, text, {
+    bot.sendMessage(msg.chat.id, "Here are the bus stops", {
       reply_markup: {
         inline_keyboard: res.map((v, i) => {
           return [{ text: `${v.Description}`, callback_data: `${v.BusStopCode}` }];
