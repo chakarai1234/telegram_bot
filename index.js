@@ -80,6 +80,17 @@ bot.on("location", (msg) => {
         text += "Bus Stop No: " + `/${res[i].BusStopCode}\n` + "Bus Stop Name: " + res[i].Description + "\n\n";
       }
     }
-    bot.sendMessage(msg.chat.id, text);
+    bot.sendMessage(msg.chat.id, text, {
+      reply_markup: {
+        keyboard: [
+          res.map((v, i) => {
+            return { text: String(v.BusStopCode) };
+          }),
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: true,
+        selective:true
+      },
+    });
   });
 });
