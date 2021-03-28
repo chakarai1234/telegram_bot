@@ -90,6 +90,9 @@ bot.on("location", (msg) => {
             return { text: String(v.BusStopCode) };
           }),
         ],
+        resize_keyboard: true,
+        one_time_keyboard: true,
+        selective:true
       },
     });
   });
