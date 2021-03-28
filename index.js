@@ -53,6 +53,47 @@ bot.onText(/\/(geolocation)/, (msg) => {
   }
 });
 
+bot.onText(/\/showstop/, (msg) => {
+  if (person_location[msg.chat.id]) {
+    nearest_location[msg.chat.id] = {
+      maxLatitude: parseFloat(person_location[msg.chat.id].latitude + distance),
+      maxLongitude: parseFloat(person_location[msg.chat.id].longitude + distance),
+      minLatitude: parseFloat(person_location[msg.chat.id].latitude - distance),
+      minLongitude: parseFloat(person_location[msg.chat.id].longitude - distance),
+    };
+
+    nearestBusStop(nearest_location[msg.chat.id]).then((res) => {
+      bot.sendChatAction(msg.chat.id, "typing");
+      bot.sendMessage(msg.chat.id, "Here are the bus stops", {
+        reply_markup: {
+          inline_keyboard: res.map((v, i) => {
+            return [{ text: `${v.Description}`, callback_data: `${v.BusStopCode}` }];
+          }),
+          one_time_keyboard: true,
+          resize_keyboard: true,
+        },
+      });
+    });
+  }
+});
+
+bot.onText(/\/showbus/, (msg) => {
+  if (person_message[msg.chat.id]) {
+    let chatId = msg.chat.id;
+    busArrival(person_message[msg.chat.id].busstop).then((res) => {
+      var text = "";
+      if (res.length == 0) {
+        text = "No Bus Available Sorry";
+      } else {
+        for (i = 0; i < res.length; i++) {
+          text += "Service No: " + res[i].ServiceNo + getMinutes(res[i].NextBus.EstimatedArrival) + "\n\n";
+        }
+      }
+      bot.sendMessage(chatId, text);
+    });
+  }
+});
+
 bot.on("location", (msg) => {
   person_location[msg.chat.id] = {
     msg_id: msg.chat.id,
@@ -82,6 +123,7 @@ bot.on("location", (msg) => {
 
 bot.on("callback_query", (query) => {
   let busstop = query.data;
+  person_message[query.message.chat.id] = { busstop: busstop };
   let chatId = query.message.chat.id;
   busArrival(busstop).then((res) => {
     var text = "";
