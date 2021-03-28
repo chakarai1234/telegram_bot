@@ -1,6 +1,6 @@
 const TelegramBot = require("node-telegram-bot-api");
 const dotenv = require("dotenv");
-const { busArrival } = require("./apiCaller");
+const { busArrival, nearestBusStop } = require("./apiCaller");
 const { getMinutes } = require("./getTime");
 dotenv.config();
 
@@ -10,12 +10,7 @@ const bot = new TelegramBot(token, { polling: true });
 
 let person_location = {};
 let person_message = {};
-let nearest_location = {
-  maxLatitude: null,
-  minLatitude: null,
-  maxLongitude: null,
-  minLongitude: null,
-};
+let nearest_location = {};
 
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
@@ -59,15 +54,14 @@ bot.onText(/\/(geolocation)/, (msg) => {
 bot.on("location", (msg) => {
   person_location[msg.chat.id] = {
     msg_id: msg.chat.id,
-    latitude: parseFloat(msg.location.latitude.toFixed(5)),
-    longitude: parseFloat(msg.location.longitude.toFixed(5)),
+    latitude: parseFloat(msg.location.latitude),
+    longitude: parseFloat(msg.location.longitude),
   };
-  nearest_location = {
-    maxLatitude: parseFloat((person_location[msg.chat.id].latitude + 0.005).toFixed(5)),
-    maxLongitude: parseFloat((person_location[msg.chat.id].longitude + 0.005).toFixed(5)),
-    minLatitude: parseFloat((person_location[msg.chat.id].latitude - 0.005).toFixed(5)),
-    minLongitude: parseFloat((person_location[msg.chat.id].longitude - 0.005).toFixed(5)),
+  nearest_location[msg.chat.id] = {
+    maxLatitude: parseFloat(person_location[msg.chat.id].latitude + 0.0035),
+    maxLongitude: parseFloat(person_location[msg.chat.id].longitude + 0.0035),
+    minLatitude: parseFloat(person_location[msg.chat.id].latitude - 0.0035),
+    minLongitude: parseFloat(person_location[msg.chat.id].longitude - 0.0035),
   };
-  console.log(person_location);
-  console.log(nearest_location);
+  nearestBusStop(nearest_location[msg.chat.id]).then((res) => console.log(res));
 });
