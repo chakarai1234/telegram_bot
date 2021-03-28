@@ -81,8 +81,8 @@ bot.on("location", (msg) => {
       for (i = 0; i < res.length; i++) {
         text = "";
         text += "Bus Stop No: " + `/${res[i].BusStopCode}\n` + "Bus Stop Name: " + res[i].Description + "\n\n";
-        bot.sendMessage(msg.chat.id, text);
       }
     }
+    bot.sendMessage(msg.chat.id, text);
   });
 });
