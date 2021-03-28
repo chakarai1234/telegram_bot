@@ -80,14 +80,10 @@ bot.on("location", (msg) => {
     }
     bot.sendMessage(msg.chat.id, text, {
       reply_markup: {
-        keyboard: [
+        inline_keyboard: 
           res.map((v, i) => {
-            return { text: String(v.BusStopCode) };
+            return [{ text: String(v.BusStopCode), callback_data: String(v.BusStopCode) }];
           }),
-        ],
-        resize_keyboard: true,
-        one_time_keyboard: true,
-        selective: true,
       },
     });
   });
