@@ -5,6 +5,7 @@ const { getMinutes } = require("./getTime");
 dotenv.config();
 
 const token = process.env.TELEGRAM_TOKEN;
+const distance = 0.003;
 
 const bot = new TelegramBot(token, { polling: true });
 
@@ -23,7 +24,6 @@ bot.onText(/\/(.+[0-9])/, (msg, match) => {
   const chatId = msg.chat.id;
   const resp = match[1];
   person_message[msg.chat.id] = { busstop: resp };
-  console.log(person_message);
   busArrival(resp).then((res) => {
     var text = "";
     if (res.length == 0) {
@@ -46,7 +46,7 @@ bot.onText(/\/(geolocation)/, (msg) => {
       one_time_keyboard: true,
     }),
   };
-  if (!person[msg.chat.id]) {
+  if (!person_location[msg.chat.id]) {
     bot.sendMessage(msg.chat.id, "Where are you?", opts);
   }
 });
@@ -58,10 +58,26 @@ bot.on("location", (msg) => {
     longitude: parseFloat(msg.location.longitude),
   };
   nearest_location[msg.chat.id] = {
-    maxLatitude: parseFloat(person_location[msg.chat.id].latitude + 0.0035),
-    maxLongitude: parseFloat(person_location[msg.chat.id].longitude + 0.0035),
-    minLatitude: parseFloat(person_location[msg.chat.id].latitude - 0.0035),
-    minLongitude: parseFloat(person_location[msg.chat.id].longitude - 0.0035),
+    maxLatitude: parseFloat(person_location[msg.chat.id].latitude + distance),
+    maxLongitude: parseFloat(person_location[msg.chat.id].longitude + distance),
+    minLatitude: parseFloat(person_location[msg.chat.id].latitude - distance),
+    minLongitude: parseFloat(person_location[msg.chat.id].longitude - distance),
   };
-  nearestBusStop(nearest_location[msg.chat.id]).then((res) => console.log(res));
+
+  nearestBusStop(nearest_location[msg.chat.id]).then((res) => {
+    var text = "";
+    if (res.length == 0) {
+      text = "No Bus Stops Available";
+    } else {
+      for (i = 0; i < res.length; i++) {
+        text +=
+          "Bus Stop No: " +
+          `/${res[i].BusStopCode}` +
+          " Bus Stop Name: " +
+          res[i].Description +
+          "\n\n";
+      }
+    }
+    bot.sendMessage(msg.chat.id, text);
+  });
 });
