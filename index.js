@@ -49,28 +49,7 @@ bot.onText(/\/(geolocation)/, (msg) => {
         one_time_keyboard: true,
       }),
     };
-    if (!person_location[msg.chat.id]) {
-      bot.sendMessage(msg.chat.id, "Where are you?", opts);
-    } else {
-      nearest_location[msg.chat.id] = {
-        maxLatitude: parseFloat(person_location[msg.chat.id].latitude + distance),
-        maxLongitude: parseFloat(person_location[msg.chat.id].longitude + distance),
-        minLatitude: parseFloat(person_location[msg.chat.id].latitude - distance),
-        minLongitude: parseFloat(person_location[msg.chat.id].longitude - distance),
-      };
-      nearestBusStop(nearest_location[msg.chat.id]).then((res) => {
-        bot.sendChatAction(msg.chat.id, "typing");
-        bot.sendMessage(msg.chat.id, "Here are the bus stops", {
-          reply_markup: {
-            inline_keyboard: res.map((v, i) => {
-              return [{ text: `${v.Description}`, callback_data: `${v.BusStopCode}` }];
-            }),
-            one_time_keyboard: true,
-            resize_keyboard: true,
-          },
-        });
-      });
-    }
+    bot.sendMessage(msg.chat.id, "Where are you?", opts);
   }
 });
 
