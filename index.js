@@ -43,16 +43,14 @@ bot.onText(/\/(geolocation)/, (msg) => {
   if (msg.chat.type === "private") {
     const opts = {
       reply_markup: JSON.stringify({
-	keyboard: [[{ text: "Send Location 📍", request_location: true }]],
-	resize_keyboard: true,
-	one_time_keyboard: true,
+        keyboard: [[{ text: "Send Location 📍", request_location: true }]],
+        resize_keyboard: true,
+        one_time_keyboard: true,
       }),
     };
-    if (!person[msg.chat.id]) {
+    if (!person_location[msg.chat.id]) {
       bot.sendMessage(msg.chat.id, "Where are you?", opts);
     }
-  } else {
-    bot.sendMessage(msg.chat.id, "This function only works in private messages.");
   }
 });
 
@@ -93,4 +91,9 @@ bot.on("location", (msg) => {
       },
     });
   });
+});
+
+// bot.on("chosen_inline_result",(msg))
+bot.on("polling_error", (err) => {
+  console.error(err);
 });
