@@ -25,6 +25,7 @@ bot.onText(/\/start/, (msg) => {
 bot.onText(/\/(.+[0-9])/, (msg, match) => {
   const chatId = msg.chat.id;
   const resp = match[1];
+  console.log(typeof resp);
   person_message[msg.chat.id] = { busstop: resp };
   busArrival(resp).then((res) => {
     var text = "";
@@ -80,16 +81,32 @@ bot.on("location", (msg) => {
     }
     bot.sendMessage(msg.chat.id, text, {
       reply_markup: {
-        inline_keyboard: 
-          res.map((v, i) => {
-            return [{ text: String(v.BusStopCode), callback_data: String(v.BusStopCode) }];
-          }),
+        inline_keyboard: res.map((v, i) => {
+          return [{ text: `${v.Description}`, callback_data: `${v.BusStopCode}` }];
+        }),
+        one_time_keyboard: true,
+        resize_keyboard: true,
       },
     });
   });
 });
 
-// bot.on("chosen_inline_result",(msg))
+bot.on("callback_query", (query) => {
+  let busstop = query.data;
+  let chatId = query.message.chat.id;
+  busArrival(busstop).then((res) => {
+    var text = "";
+    if (res.length == 0) {
+      text = "No Bus Available Sorry";
+    } else {
+      for (i = 0; i < res.length; i++) {
+        text += "Service No: " + res[i].ServiceNo + getMinutes(res[i].NextBus.EstimatedArrival) + "\n\n";
+      }
+    }
+    bot.sendMessage(chatId, text);
+  });
+});
+
 bot.on("polling_error", (err) => {
   console.error(err);
 });
