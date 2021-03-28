@@ -79,7 +79,7 @@ bot.on("location", (msg) => {
       text = "No Bus Stops Available";
     } else {
       for (i = 0; i < res.length; i++) {
-        text = "";
+        // text = "";
         text += "Bus Stop No: " + `/${res[i].BusStopCode}\n` + "Bus Stop Name: " + res[i].Description + "\n\n";
       }
     }
