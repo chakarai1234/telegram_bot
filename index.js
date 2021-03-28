@@ -89,7 +89,7 @@ bot.on("location", (msg) => {
         ],
         resize_keyboard: true,
         one_time_keyboard: true,
-        selective:true
+        selective: true,
       },
     });
   });
