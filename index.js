@@ -73,6 +73,7 @@ bot.on("location", (msg) => {
   };
 
   nearestBusStop(nearest_location[msg.chat.id]).then((res) => {
+    bot.sendChatAction(msg.chat.id, "typing");
     var text = "";
     if (res.length == 0) {
       text = "No Bus Stops Available";

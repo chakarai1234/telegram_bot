@@ -4,6 +4,7 @@
   "description": "This is Telegram bot for Bus Arrival",
   "main": "index.js",
   "scripts": {
+    "start": "node index",
     "dev": "nodemon index.js"
   },
   "author": "Srinivasan Chakarapani",
