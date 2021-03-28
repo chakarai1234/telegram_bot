@@ -7,7 +7,9 @@ dotenv.config();
 const token = process.env.TELEGRAM_TOKEN;
 const distance = 0.003;
 
-const bot = new TelegramBot(token, { polling: true });
+const bot = new TelegramBot(token, {
+  polling: true,
+});
 
 let person_location = {};
 let person_message = {};
@@ -16,7 +18,7 @@ let nearest_location = {};
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const resp =
-    "Welcome to the Bus Tracer Bot\n\nI want to know your location so use\n\n /geolocation to give your location to me. Keep in mind this one you press one hor";
+    "Welcome to the Bus Tracer Bot\n\nI want to know your location so use\n\n/geolocation to give your location to me. Keep in mind this one you press one hor";
   bot.sendMessage(chatId, resp);
 });
 
@@ -30,8 +32,7 @@ bot.onText(/\/(.+[0-9])/, (msg, match) => {
       text = "No Bus Available Sorry";
     } else {
       for (i = 0; i < res.length; i++) {
-        text +=
-          "Service No: " + res[i].ServiceNo + getMinutes(res[i].NextBus.EstimatedArrival) + "\n\n";
+        text += "Service No: " + res[i].ServiceNo + getMinutes(res[i].NextBus.EstimatedArrival) + "\n\n";
       }
     }
     bot.sendMessage(chatId, text);
@@ -41,7 +42,14 @@ bot.onText(/\/(.+[0-9])/, (msg, match) => {
 bot.onText(/\/(geolocation)/, (msg) => {
   const opts = {
     reply_markup: JSON.stringify({
-      keyboard: [[{ text: "Send Location 📍", request_location: true }]],
+      keyboard: [
+        [
+          {
+            text: "Send Location 📍",
+            request_location: true,
+          },
+        ],
+      ],
       resize_keyboard: true,
       one_time_keyboard: true,
     }),
@@ -70,14 +78,10 @@ bot.on("location", (msg) => {
       text = "No Bus Stops Available";
     } else {
       for (i = 0; i < res.length; i++) {
-        text +=
-          "Bus Stop No: " +
-          `/${res[i].BusStopCode}` +
-          " Bus Stop Name: " +
-          res[i].Description +
-          "\n\n";
+        text = "";
+        text += "Bus Stop No: " + `/${res[i].BusStopCode}\n` + "Bus Stop Name: " + res[i].Description + "\n\n";
+        bot.sendMessage(msg.chat.id, text);
       }
     }
-    bot.sendMessage(msg.chat.id, text);
   });
 });

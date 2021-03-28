@@ -63,19 +63,7 @@ async function busStops() {
       const data10 = allData[9].data.value;
       const data11 = allData[10].data.value;
 
-      const newData = [
-        ...data1,
-        ...data2,
-        ...data3,
-        ...data4,
-        ...data5,
-        ...data6,
-        ...data7,
-        ...data8,
-        ...data9,
-        ...data10,
-        ...data11,
-      ];
+      const newData = [...data1, ...data2, ...data3, ...data4, ...data5, ...data6, ...data7, ...data8, ...data9, ...data10, ...data11];
       return newData;
     }),
   );
